@@ -1,0 +1,61 @@
+name: grid-q-staging
+on:
+  push:
+    branches: [grid-q-actions]
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  staging-runner:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v6
+        with:
+          go-version: '1.26.10'
+          cache: false
+      - name: Verify QA assets
+        run: |
+          base=https://qa-releases.sparkwing.dev/releases/download/v0.68.0-qa.21
+          curl -fsSL "$base/SHA256SUMS" -o "$RUNNER_TEMP/SHA256SUMS"
+          for asset in sparkwing-linux-amd64 sparkwing-runner-linux-amd64; do
+            curl -fsSL "$base/$asset" -o "$RUNNER_TEMP/$asset"
+            env -C "$RUNNER_TEMP" sh -c 'grep "  '"$asset"'$" SHA256SUMS | sha256sum -c -'
+            chmod +x "$RUNNER_TEMP/$asset"
+          done
+      - name: Run staging work
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GOPROXY: https://qa-releases.sparkwing.dev/goproxy|https://proxy.golang.org|direct
+          GONOSUMDB: github.com/sparkwing-dev/sparkwing
+        run: |
+          export HOME="$RUNNER_TEMP/grid-q-runner-home" SPARKWING_HOME="$RUNNER_TEMP/grid-q-runner-home/sparkwing"
+          mkdir -p "$HOME"
+          "$RUNNER_TEMP/sparkwing-runner-linux-amd64" warm --github-actions --team korey-gam --controller https://staging.sparkwing.dev --idle-exit 90s --max-concurrent 2
+  embedded:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v6
+        with:
+          go-version: '1.26.10'
+          cache: false
+      - name: Verify QA assets
+        run: |
+          base=https://qa-releases.sparkwing.dev/releases/download/v0.68.0-qa.21
+          curl -fsSL "$base/SHA256SUMS" -o "$RUNNER_TEMP/SHA256SUMS"
+          for asset in sparkwing-linux-amd64 sparkwing-runner-linux-amd64; do
+            curl -fsSL "$base/$asset" -o "$RUNNER_TEMP/$asset"
+            env -C "$RUNNER_TEMP" sh -c 'grep "  '"$asset"'$" SHA256SUMS | sha256sum -c -'
+            chmod +x "$RUNNER_TEMP/$asset"
+          done
+      - name: Run embedded pipeline
+        env:
+          GOPROXY: https://qa-releases.sparkwing.dev/goproxy|https://proxy.golang.org|direct
+          GONOSUMDB: github.com/sparkwing-dev/sparkwing
+        run: |
+          export HOME="$RUNNER_TEMP/grid-q-home" SPARKWING_HOME="$RUNNER_TEMP/grid-q-home/sparkwing"
+          mkdir -p "$HOME"
+          "$RUNNER_TEMP/sparkwing-linux-amd64" run grid-q-embedded --sw-allow-unadmitted --sw-no-update

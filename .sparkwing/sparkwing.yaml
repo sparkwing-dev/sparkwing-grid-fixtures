@@ -30,3 +30,7 @@ pipelines:
           cron: '* * * * *'
           where: controller
           overlap: queue
+  - name: grid-q-actions
+    entrypoint: Grid
+  - name: grid-q-embedded
+    entrypoint: Grid

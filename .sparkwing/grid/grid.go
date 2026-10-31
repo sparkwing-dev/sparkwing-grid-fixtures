@@ -22,4 +22,4 @@ func(Grid) Plan(_ context.Context,p *sparkwing.Plan,_ sparkwing.NoInputs,r spark
  })
  };return nil
 }
-func init(){sparkwing.Register("Grid",func()sparkwing.Pipeline[sparkwing.NoInputs]{return Grid{}});for _,n:=range []string{"hello","fx-other","fx-pin","fx-parent","fx-child","fx-fail","fx-overlap"}{sparkwing.Register(n,func()sparkwing.Pipeline[sparkwing.NoInputs]{return Grid{}})}}
+func init(){sparkwing.Register("Grid",func()sparkwing.Pipeline[sparkwing.NoInputs]{return Grid{}});for _,n:=range []string{"hello","fx-other","fx-pin","fx-parent","fx-child","fx-fail","fx-overlap","grid-q-actions","grid-q-embedded"}{sparkwing.Register(n,func()sparkwing.Pipeline[sparkwing.NoInputs]{return Grid{}})}}
