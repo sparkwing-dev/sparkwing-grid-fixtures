@@ -1,32 +1,9 @@
 pipelines:
-  - name: hello
-    entrypoint: Grid
-    on:
-      schedule:
-        - name: five
-          cron: '*/5 * * * *'
-          where: controller
-          tz: UTC
-        - name: hourly
-          cron: '0 * * * *'
-          where: controller
-          tz: America/Boise
-  - name: fx-other
-    entrypoint: Grid
-  - name: fx-pin
-    entrypoint: Grid
-    source: fx-pinned
-  - name: fx-parent
-    entrypoint: Grid
-  - name: fx-child
-    entrypoint: Grid
+  - name: hello-ts
+    entrypoint: HelloTs
+  - name: marketing
+    entrypoint: Marketing
+  - name: fx-fork
+    entrypoint: ForkReader
   - name: fx-fail
-    entrypoint: Grid
-  - name: fx-overlap
-    entrypoint: Grid
-    on:
-      schedule:
-        - name: overlap
-          cron: '* * * * *'
-          where: controller
-          overlap: queue
+    entrypoint: Fail

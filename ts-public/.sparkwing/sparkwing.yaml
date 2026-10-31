@@ -1,0 +1,9 @@
+pipelines:
+  - name: hello-ts
+    entrypoint: HelloTs
+  - name: marketing
+    entrypoint: Marketing
+  - name: fx-fork
+    entrypoint: ForkReader
+  - name: fx-fail
+    entrypoint: Fail

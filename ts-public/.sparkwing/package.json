@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "type": "module",
+  "main": "index.ts",
+  "dependencies": {
+    "@sparkwing/sdk": "0.68.2"
+  }
+}
