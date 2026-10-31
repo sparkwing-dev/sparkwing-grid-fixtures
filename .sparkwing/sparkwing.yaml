@@ -30,3 +30,12 @@ pipelines:
           cron: '* * * * *'
           where: controller
           overlap: queue
+  - name: grid-v-claims
+    entrypoint: Grid
+  - name: grid-v-child
+    entrypoint: Grid
+  - name: grid-v-parent
+    entrypoint: Grid
+  - name: grid-v-pin
+    entrypoint: Grid
+    source: grid-v-pin-source
