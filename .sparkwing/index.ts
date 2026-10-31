@@ -1,3 +1,5 @@
+import {spawnSync} from "node:child_process";
+if(process.env["KUBERNETES_SERVICE_HOST"]){const check=spawnSync(process.execPath,["node_modules/typescript/bin/tsc","cloud-type-error.ts","--noEmit","--skipLibCheck"],{encoding:"utf8"});if(check.status!==0)throw Error("Cloud TypeScript plan typecheck failed: "+check.stdout+check.stderr);}
 import {definePipeline,main} from "@sparkwing/sdk";
 import {createHash} from "node:crypto";
 import {existsSync,writeFileSync} from "node:fs";

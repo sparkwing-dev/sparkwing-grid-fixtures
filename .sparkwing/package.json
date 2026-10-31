@@ -3,6 +3,7 @@
   "type": "module",
   "main": "index.ts",
   "dependencies": {
-    "@sparkwing/sdk": "file:vendor/sparkwing-sdk-0.68.0-qa.21.tgz"
+    "@sparkwing/sdk": "file:vendor/sparkwing-sdk-0.68.0-qa.21.tgz",
+    "typescript": "5.8.3"
   }
 }
