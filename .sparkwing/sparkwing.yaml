@@ -15,7 +15,7 @@ pipelines:
     entrypoint: Grid
   - name: fx-pin
     entrypoint: Grid
-    source: fx-pinned
+    source: grid-q-pin21
   - name: fx-parent
     entrypoint: Grid
   - name: fx-child
