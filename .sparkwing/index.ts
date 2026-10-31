@@ -9,4 +9,5 @@ definePipeline({name:"ApprovalTs",plan(p){const a=p.approval("gate",{message:"Gr
 definePipeline({name:"SecretsTs",secrets:[{name:"GRID_Q_TS_SECRET"},{name:"GRID_Q_TS_ABSENT",optional:true}],plan(p){p.job("secret-mask",async(c)=>{const v=await c.secret("GRID_Q_TS_SECRET");const absent=await c.secret("GRID_Q_TS_ABSENT");c.log.info(`length=${v?.length} echo=${v} optional-absent=${absent===undefined}`);});}});
 definePipeline({name:"ChildTs",plan(p){p.job("child",async(c)=>{c.log.info("declared TS child success");return{ok:true};});}});
 definePipeline({name:"FanoutTs",plan(p){p.job("parent",async(c)=>{const o=await c.runPipeline<{ok:boolean}>("q-child-ts","child");if(!o.ok)throw Error("child output missing");c.log.info("linked declared child success");}).startsChildren("q-child-ts");}});
+definePipeline({name:"OtherSecretTs",secrets:[{name:"GRID_Q_TS_SECRET",optional:true}],plan(p){p.job("other-secret",async(c)=>{const v=await c.secret("GRID_Q_TS_SECRET");if(v!==undefined)throw Error("pipeline scoped secret leaked");c.log.info("other pipeline scoped secret missing=true optional undefined");});}});
 await main();

@@ -19,3 +19,5 @@ pipelines:
     entrypoint: ChildTs
   - name: q-fanout-ts
     entrypoint: FanoutTs
+  - name: q-other-secret-ts
+    entrypoint: OtherSecretTs
