@@ -1,32 +1,17 @@
 pipelines:
-  - name: hello
-    entrypoint: Grid
-    on:
-      schedule:
-        - name: five
-          cron: '*/5 * * * *'
-          where: controller
-          tz: UTC
-        - name: hourly
-          cron: '0 * * * *'
-          where: controller
-          tz: America/Boise
-  - name: fx-other
-    entrypoint: Grid
-  - name: fx-pin
-    entrypoint: Grid
-    source: fx-pinned
-  - name: fx-parent
-    entrypoint: Grid
-  - name: fx-child
-    entrypoint: Grid
-  - name: fx-fail
-    entrypoint: Grid
-  - name: fx-overlap
-    entrypoint: Grid
-    on:
-      schedule:
-        - name: overlap
-          cron: '* * * * *'
-          where: controller
-          overlap: queue
+  - name: q-hello-ts
+    entrypoint: HelloTs
+  - name: q-marketing-ts
+    entrypoint: Marketing
+  - name: q-retry-ts
+    entrypoint: RetryTs
+  - name: q-approval-ts
+    entrypoint: ApprovalTs
+  - name: q-secrets-ts
+    entrypoint: SecretsTs
+  - name: q-child-ts
+    entrypoint: ChildTs
+  - name: q-fanout-ts
+    entrypoint: FanoutTs
+  - name: q-other-secret-ts
+    entrypoint: OtherSecretTs
