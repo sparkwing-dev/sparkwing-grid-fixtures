@@ -1,0 +1,43 @@
+name: grid asserted ref refusal
+on:
+  workflow_dispatch:
+    inputs:
+      target_run:
+        description: Staging asserted run to claim
+        required: true
+        type: string
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Exchange real Actions identity and try asserted work
+        env:
+          TARGET_RUN: ${{ inputs.target_run }}
+        run: |
+          python3 - <<'PY'
+          import os,json,urllib.request,urllib.error,urllib.parse
+          origin='https://staging.sparkwing.dev'
+          def call(url,data=None,token=None):
+              h={'Content-Type':'application/json'}
+              if token:h['Authorization']='Bearer '+token
+              req=urllib.request.Request(url,data=None if data is None else json.dumps(data).encode(),headers=h)
+              try:r=urllib.request.urlopen(req,timeout=45)
+              except urllib.error.HTTPError as e:r=e
+              raw=r.read().decode();return r.status,json.loads(raw) if raw else None
+          url=os.environ['ACTIONS_ID_TOKEN_REQUEST_URL']+'&audience='+urllib.parse.quote(origin,safe='')
+          code,identity=call(url,token=os.environ['ACTIONS_ID_TOKEN_REQUEST_TOKEN'])
+          assert code==200,'GitHub OIDC unavailable'
+          code,exchange=call(origin+'/api/v1/runners/github/exchange',{'id_token':identity['value'],'team':'korey-gam'})
+          print(json.dumps({'exchange_status':code,'binding':exchange.get('binding'),'repository':exchange.get('repository')}))
+          assert code==201,'staging exchange refused'
+          target=os.environ['TARGET_RUN'];assert target.startswith('run-') and '/' not in target
+          body={'kinds':['trigger'],'labels':['github-actions'],'runner_version':'0.68.0-qa.20','os':'linux','arch':'amd64','free_slots':1}
+          code,response=call(origin+'/api/v1/runs/'+target+'/claim',body,exchange['token'])
+          if code>=400:print(json.dumps({'target_run':target,'claim_status':code,'response':response}))
+          else:print(json.dumps({'target_run':target,'claim_status':code,'unexpected_claim':True}))
+          assert code==403,'expected refusal of asserted work'
+          PY

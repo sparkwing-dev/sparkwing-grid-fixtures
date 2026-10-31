@@ -1,8 +1,0 @@
-{
-  "private": true,
-  "type": "module",
-  "main": "index.ts",
-  "dependencies": {
-    "@sparkwing/sdk": "file:vendor/sparkwing-sdk-0.68.0-qa.20.tgz"
-  }
-}
